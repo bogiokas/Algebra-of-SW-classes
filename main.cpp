@@ -2,20 +2,18 @@
 #include<array>
 #include "Polynomial.hpp"
 
-constexpr size_t k = 3;
-constexpr size_t N = 25;
+constexpr size_t k = 5;
+constexpr size_t N = 15;
 
 std::array<Polynomial<k>, N+1> ComputeBarPolynomials() {
 	std::array<Polynomial<k>, N+1> polynomials;
-	polynomials[0].Insert(Monomial<k>());
+	polynomials[0] += CONST_MONOMIAL<k>;
 	for(size_t i = 1; i <= N; i++) {
 		auto& polynomial = polynomials[i];
-		for(size_t l = 1; l <= i && l <= k; l++) {
-			auto& previousPolynomial = polynomials[i-l];
-			for(const auto& previousMonomial : previousPolynomial.GetElements()) {
-				auto monomial = Monomial<k>(previousMonomial);
-				monomial.MultiplyByVariable(l);
-				polynomial.Insert(monomial);
+		for(size_t s = 1; s <= k && s <= i; s++) {
+			auto& previousPolynomial = polynomials[i-s];
+			for(const auto& previousMonomial : previousPolynomial.GetMonomials()) {
+				polynomial += previousMonomial * s;
 			}
 		}
 	}	

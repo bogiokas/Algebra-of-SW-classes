@@ -1,4 +1,5 @@
 #include<set>
+#include<iostream>
 
 template<class Element> class BinarySet {
 public:
@@ -8,6 +9,12 @@ public:
 		auto it = m_elements.find(e);
 		if(it != m_elements.end()) m_elements.erase(it);
 		else m_elements.insert(e);
+	}
+	
+	void Insert(Element&& e) {
+		auto it = m_elements.find(e);
+		if(it != m_elements.end()) m_elements.erase(it);
+		else m_elements.insert(std::move(e));
 	}
 	
 	const std::set<Element>& GetElements() const {
