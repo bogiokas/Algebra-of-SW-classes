@@ -1,50 +1,19 @@
-#include<array>
+#pragma once
 #include<set>
-#include<cassert>
-#include "BinarySet.hpp"
+#include<vector>
 #include<iostream>
-//#include "Counter.hpp"
+#include "BinarySet.hpp"
+#include "Monomial.hpp"
 
-template<int K> class Monomial {
+template<size_t K> class Polynomial {
 public:
-	Monomial() = default;
-	Monomial(const Monomial&) = default;
-	Monomial(Monomial&&) = default;
-	Monomial<K>& operator=(const Monomial<K>&) = default;
-	Monomial<K>& operator=(Monomial<K>&&) = default;
-
-	bool operator<(const Monomial<K>& other) const {
-		for(size_t i=0; i<K; i++) {
-			if(other.m_exponents[i] < m_exponents[i]) return true;
-			else if(other.m_exponents[i] > m_exponents[i]) return false;
+	Polynomial() = default;
+	Polynomial(const std::vector<std::array<size_t, K>>& vectorOfMonomialExponents) {
+		for(const auto& monomialExponents : vectorOfMonomialExponents) {
+			m_monomials.Insert(Monomial<K>(monomialExponents));
 		}
-		return false;
 	}
 
-	Monomial<K>& operator*=(size_t i) {
-		assert( i <= K );
-		m_exponents[i-1]++;
-		return *this;
-	}
-	
-	Monomial<K> operator*(size_t i) const {
-		auto result = *this;
-		result *= i;
-		return result;
-	}
-	
-	const std::array<size_t, K>& GetExponents() const {
-		return m_exponents;
-	}
-
-private:
-	std::array<size_t, K> m_exponents;
-};
-
-template<int K> static constexpr Monomial<K> CONST_MONOMIAL = Monomial<K>();
-
-template<int K> class Polynomial {
-public:
 	Polynomial<K>& operator+=(const Monomial<K>& monomial) {
 		m_monomials.Insert(monomial);
 		return *this;
@@ -62,26 +31,62 @@ public:
 		return *this;
 	}
 
+	Polynomial<K> operator+(const Polynomial<K>& other) const {
+		auto result = *this;
+		result += other;
+		return result;
+	}
+
+	Polynomial<K>& operator*=(const Monomial<K>& otherMonomial) {
+		BinarySet<Monomial<K>> newMonomials;
+		for(const auto& monomial : GetMonomials() ) {
+			newMonomials.Insert(monomial * otherMonomial);
+		}
+		m_monomials = std::move(newMonomials);
+		return *this;
+	}		
+
+	Polynomial<K> operator*(const Monomial<K>& otherMonomial) const {
+		auto result = *this;
+		result *= otherMonomial;
+		return result;
+	}
+
+	template<class Compare> Polynomial<K>& ReplaceByMod(const Polynomial<K>& other, Compare cmp) {
+		auto div = LeadingTerm(cmp) / other.LeadingTerm(cmp);
+		*this += other * div;
+		return *this;
+	}		
+
+	template<class Compare> Polynomial<K> Mod(const Polynomial<K>& other, Compare cmp) const {
+		auto result = *this;
+		result.ReplaceByMod(other, cmp);
+		return result;
+	}
+
+	bool IsZero() const {
+		return m_monomials.IsEmpty();
+	}
+
+	template<class Compare> const Monomial<K>& LeadingTerm(Compare cmp) const {
+		return m_monomials.GetMaxElement(cmp);
+	}
+
 	const std::set<Monomial<K>>& GetMonomials() const {
 		return m_monomials.GetElements();
 	}
 private:
+
+	std::set<Monomial<K>>& GetMutableMonomials() {
+		return m_monomials.GetMutableElements();
+	}
 	BinarySet<Monomial<K>> m_monomials;
 };
 
 
-template<int K> std::ostream& operator<< (std::ostream& out, const Polynomial<K>& curr) {
+template<size_t K> std::ostream& operator<< (std::ostream& out, const Polynomial<K>& curr) {
 	for( const auto& element : curr.GetMonomials() ) {
 		out<<element<<" ";
 	}
 	return out;
 }
-
-template<int K> std::ostream& operator<< (std::ostream& out, const Monomial<K>& curr) {
-	out<<"|";
-	for( auto exponent : curr.GetExponents() ) {
-		out<<exponent<<"|";
-	}
-	return out;
-}
-
