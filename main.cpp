@@ -23,38 +23,34 @@ std::array<Polynomial<k>, N+1> ComputeBarPolynomials() {
 }
 
 int main() {
-	/*
 	const auto perm = Permutation<k>(false);
 	auto comp = [&perm](const Monomial<k>& a, const Monomial<k>& b) {
 		return a.IsLessThan(b, perm);
 	};
 	const auto& barPolynomials = ComputeBarPolynomials();
-	for(const auto& polynomial : barPolynomials) {
-		std::cout << polynomial << std::endl;
-		std::cout << polynomial.LeadingTerm(comp) << std::endl;
+//	for(const auto& polynomial : barPolynomials) {
+//		std::cout << polynomial << std::endl;
+//	}
+	
+	std::vector<Polynomial<k>> basis;
+	for(size_t m=2; m<=N-k+1; ++m) {
+		std::cout<<"------------------------"<<std::endl;
+		basis.clear();
+		for(size_t j=0; j<k; ++j) {
+			basis.push_back(barPolynomials[m+j]);
+		}
+		for( const auto& polynomial : basis ) {
+			std::cout<<polynomial<<", ";
+		}
+		std::cout<<std::endl;
+		Buchberger<k, decltype(comp)> bb(comp, basis);
+		const auto gBasis = bb.ComputeGroebnerBasis();
+		for( const auto& polynomial : gBasis ) {
+			std::cout<<polynomial<<", ";
+		}
+		std::cout<<std::endl;
 	}
 	
-	std::vector<Polynomial<k>> basis = {barPolynomials[N], barPolynomials[N-1], barPolynomials[N-2], barPolynomials[N-3]};
-	Buchberger<k, decltype(comp)> bb(comp, basis);
-	const auto S = bb.CreateSyzygy(barPolynomials[N], barPolynomials[N-1]);
-	std::cout<< S <<std::endl;
-	const auto NF = bb.NormalForm(S);
-	std::cout<< NF <<std::endl;
-	*/
-	
-	const auto perm = Permutation<k>();
-	auto comp = [&perm](const Monomial<k>& a, const Monomial<k>& b) {
-		return a.IsLessThan(b, perm);
-	};
-	std::vector<Polynomial<k>> basis = {
-		Polynomial<k>({ {0,0,1}, {5,0,0} }),
-		Polynomial<k>({ {0,1,0}, {3,0,0} }),
-	};
-	Buchberger<k, decltype(comp)> bb(comp, basis);
-	const auto gBasis = bb.ComputeGroebnerBasis();
-	for( const auto& polynomial : gBasis ) {
-		std::cout<<polynomial<<", ";
-	}
 	system("pause");
 	return 0;
 }

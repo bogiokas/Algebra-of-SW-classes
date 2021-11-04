@@ -23,11 +23,11 @@ public:
 			m_basisPairs.pop_back();
 			const auto S = CreateSyzygy(m_basis[pair[0]], m_basis[pair[1]]);
 			const auto NF = NormalForm(S);
-Print();
-std::cout<<"f= "<<m_basis[pair[0]]<<std::endl;
-std::cout<<"g= "<<m_basis[pair[1]]<<std::endl;
-std::cout<<"S(f,g)= "<<S<<std::endl;
-std::cout<<"NF(S)= "<<NF<<std::endl;
+//Print();
+//std::cout<<"f= "<<m_basis[pair[0]]<<std::endl;
+//std::cout<<"g= "<<m_basis[pair[1]]<<std::endl;
+//std::cout<<"S(f,g)= "<<S<<std::endl;
+//std::cout<<"NF(S)= "<<NF<<std::endl;
 			if(!NF.IsZero()) {
 				size_t N = m_basis.size();
 				m_basis.push_back(NF);
