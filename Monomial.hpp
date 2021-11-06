@@ -29,7 +29,7 @@ public:
 	}
 
 	bool operator<(const Monomial<K>& other) const {
-		return IsLessThan(other, Permutation<K>(false));
+		return IsLessThan(other, Permutation<K>(true));
 	}
 
 	Monomial<K>& operator*=(size_t i) {

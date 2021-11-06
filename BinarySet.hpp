@@ -1,5 +1,6 @@
 #pragma once
 #include<set>
+#include<vector>
 #include <algorithm>
 #include<iostream>
 
@@ -28,10 +29,6 @@ public:
 	}
 	
 	const std::set<Element>& GetElements() const {
-		return m_elements;
-	}
-
-	std::set<Element>& GetMutableElements() {
 		return m_elements;
 	}
 

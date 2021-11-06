@@ -38,6 +38,25 @@ public:
 		}
 		return m_basis;
 	}
+	
+	std::vector<Polynomial<K>> ComputeMinimalGroebnerBasis() {
+		auto result = ComputeGroebnerBasis();
+		for(size_t reverseI=result.size(); reverseI>0; --reverseI) {
+			size_t i=reverseI-1;
+			for(size_t j=0; j<result.size(); ++j) {
+				if(i==j) continue;
+				if(result[j].LeadingTerm(m_cmp).Divides(result[i].LeadingTerm(m_cmp))) {
+					result.erase(result.begin() + i);
+					break;
+				}
+			}
+		}
+		return result;
+	}
+	
+	std::vector<Polynomial<K>> ComputeReducedGroebnerBasis() {
+		
+	}
 
 private:
 	Polynomial<K> CreateSyzygy(const Polynomial<K>& f, const Polynomial<K>& g) const {
@@ -56,7 +75,7 @@ private:
 			for( const auto& polynomial : m_basis ) {
 				const auto& ltOther = polynomial.LeadingTerm(m_cmp);
 				if(ltOther.Divides(ltResult)) {
-					result.ReplaceByMod(polynomial, m_cmp);
+					result.ReduceByMod(polynomial, m_cmp);
 					reduced = true;
 					break;
 				}

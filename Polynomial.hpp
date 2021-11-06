@@ -52,15 +52,15 @@ public:
 		return result;
 	}
 
-	template<class Compare> Polynomial<K>& ReplaceByMod(const Polynomial<K>& other, Compare cmp) {
+	template<class Compare> Polynomial<K>& ReduceByMod(const Polynomial<K>& other, Compare cmp) {
 		auto div = LeadingTerm(cmp) / other.LeadingTerm(cmp);
 		*this += other * div;
 		return *this;
-	}		
+	}
 
 	template<class Compare> Polynomial<K> Mod(const Polynomial<K>& other, Compare cmp) const {
 		auto result = *this;
-		result.ReplaceByMod(other, cmp);
+		result.ReduceByMod(other, cmp);
 		return result;
 	}
 
@@ -76,10 +76,6 @@ public:
 		return m_monomials.GetElements();
 	}
 private:
-
-	std::set<Monomial<K>>& GetMutableMonomials() {
-		return m_monomials.GetMutableElements();
-	}
 	BinarySet<Monomial<K>> m_monomials;
 };
 
