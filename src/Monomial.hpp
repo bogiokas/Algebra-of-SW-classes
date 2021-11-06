@@ -7,7 +7,9 @@
 
 template<size_t K> class Monomial {
 public:
-	Monomial() = default;
+	Monomial()
+		: m_exponents()
+	{}
 	Monomial(const std::array<size_t, K>& exponents)
 		: m_exponents(exponents)
 	{}
@@ -95,7 +97,7 @@ private:
 	std::array<size_t, K> m_exponents;
 };
 
-template<size_t K> static constexpr Monomial<K> CONST_MONOMIAL = Monomial<K>();
+template<size_t K> static Monomial<K> CONST_MONOMIAL = Monomial<K>();
 
 
 template<size_t K> std::ostream& operator<< (std::ostream& out, const Monomial<K>& curr) {

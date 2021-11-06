@@ -9,6 +9,7 @@ public:
 	Buchberger(Compare cmp, const std::vector<Polynomial<K>> basis)
 		: m_cmp(cmp)
 		, m_basis(basis)
+		, m_basisPairs()
 	{
 		for(size_t i=0; i<m_basis.size(); ++i) {
 			for(size_t j=i+1; j<m_basis.size(); ++j) {

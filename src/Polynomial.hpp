@@ -7,7 +7,9 @@
 
 template<size_t K> class Polynomial {
 public:
-	Polynomial() = default;
+	Polynomial()
+		: m_monomials()
+	{}
 	Polynomial(const std::vector<std::array<size_t, K>>& vectorOfMonomialExponents) {
 		for(const auto& monomialExponents : vectorOfMonomialExponents) {
 			m_monomials.Insert(Monomial<K>(monomialExponents));

@@ -9,18 +9,16 @@ LOG_DIR = log
 #LOGGING_RUN = > $(LOG_DIR)/run.log
 #rmEmptyLogFiles = find . -type f -empty -delete
 
-SRCS := $(shell find $(SRC_DIR) -name *.cpp)
+SRCS := $(wildcard $(SRC_DIR)/*.cpp)
 OBJS := $(SRCS:$(SRC_DIR)/%.cpp=$(BUILD_DIR)/%.o)
 DEPS := $(OBJS:%.o=%.d)
 
 depFlags = -MMD -MP
-INC_DIRS = $(shell find $(SRC_DIR) -type d)
-incFlags = $(addprefix -I, $(INC_DIRS))
 
 CXX = g++
 versionFlags = -std=c++17
 warningFlags = -Wall -Wextra -Wshadow -Weffc++
-allFlags = $(versionFlags) $(warningFlags) $(depFlags) $(incFlags)
+allFlags = $(versionFlags) $(warningFlags) $(depFlags)
 
 $(Executable): $(OBJS)
 	$(makeLogDir)
